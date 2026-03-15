@@ -126,7 +126,10 @@ function Viewport:close()
     local scaleX, scaleY = getCanvasScale(self, self._canvas)
     local canvasX, canvasY = getCanvasPosition(self)
 
+    local blendmode, alphamode = love.graphics.getBlendMode()
+    love.graphics.setBlendMode("alpha", "premultiplied")
     love.graphics.draw(self._canvas, canvasX, canvasY, self.rotation, scaleX, scaleY, canvasW/2, canvasH/2)
+    love.graphics.setBlendMode(blendmode, alphamode)
 end
 
 
