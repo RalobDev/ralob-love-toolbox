@@ -14,10 +14,10 @@ A 2D Viewport library for LÖVE (Love2D) that allows rendering scenes to a virtu
 
 ## 📦 Installation
 
-Copy the `Viewport.lua` file into your project and require it normally:
+Copy the `viewport.lua` file into your project and require it normally:
 
 ```lua
-local Viewport = require("Viewport")
+local Viewport = require("viewport")
 ```
 
 ## 🚀 Basic Usage
@@ -28,7 +28,7 @@ local Viewport = require("Viewport")
 local viewport = Viewport:new(320, 180, "pixel_perfect")
 ```
 
-Parâmetros:
+Parameters:
 - `width`: virtual viewport width
 - `height`: virtual viewport height
 - `scale_mode` (optional): scale mode
@@ -103,8 +103,6 @@ viewport.clear_color = { 0.1, 0.1, 0.1, 1.0 }
 This value is applied internally via `love.graphics.clear()` every time `viewport:open()` is called.
 
 ## 🧩 Nested Multiple Viewports
-
-A biblioteca suporta viewports aninhados de forma segura.
 
 The library safely supports nested viewports.
 
