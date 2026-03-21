@@ -16,7 +16,7 @@
 local Class = {}
 Class.__index = Class
 
----| Public Functions
+--#region Public Methods
 
 --- Creates a new instance of Class.
 --- @return table
@@ -24,7 +24,6 @@ function Class:new()
     local obj = setmetatable({}, self)
     return obj
 end
-
 
 --- Extends the class.
 --- @generic T : Class
@@ -42,7 +41,6 @@ function Class:extend()
     return cls
 end
 
-
 --- Implements the methods of a mixin.
 --- @param ... table
 function Class:implement(...)
@@ -54,7 +52,6 @@ function Class:implement(...)
         end
     end
 end
-
 
 --- Returns whether the class type matches T.
 --- @param T Class
@@ -69,5 +66,7 @@ function Class:is(T)
     end
     return false
 end
+
+--#endregion
 
 return Class

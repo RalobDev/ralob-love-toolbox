@@ -13,8 +13,6 @@
 local Viewport = {}
 Viewport.__index = Viewport
 
----| Types/Enums
-
 --- @enum (key) Viewport.ScaleMode
 local ScaleMode = {
     keep_size = "keep_size",
@@ -23,17 +21,18 @@ local ScaleMode = {
     none = "none"
 }
 
----| Helpers
+--#region Local Methods
 
 --- Returns a canvas based on the viewport parameters.
----@param viewport Viewport
----@return love.Canvas
+--- @nodiscard
+--- @param viewport Viewport
+--- @return love.Canvas
 local function createCanvas(viewport)
     return love.graphics.newCanvas(viewport:getWidth(), viewport:getHeight(), viewport:getSettings())
 end
 
-
 --- Returns the scale that should be applied to the viewport canvas.
+--- @nodiscard
 --- @param viewport Viewport
 --- @param canvas love.Canvas
 --- @return integer, integer
@@ -59,8 +58,8 @@ local function getCanvasScale(viewport, canvas)
     return scaleX, scaleY
 end
 
-
 --- Returns the position of the viewport canvas.
+--- @nodiscard
 --- @param viewport Viewport
 --- @return number, number
 local function getCanvasPosition(viewport)
@@ -77,9 +76,13 @@ local function getCanvasPosition(viewport)
     return canvasX, canvasY
 end
 
----| Public Functions
+--#endregion
+
+
+--#region Public Methods
 
 --- Creates a new Viewport.
+--- @nodiscard
 --- @param width number
 --- @param height number
 --- @param scale_mode? Viewport.ScaleMode
@@ -99,23 +102,21 @@ function Viewport:new(width, height, scale_mode, settings)
     obj._need_canvas_update = true
     obj._previous_canvas = nil
 
-    obj:updateCanvas()
+    obj:_updateCanvas()
 
     return obj
 end
 
-
 --- Opens the Viewport for drawing operations.
 function Viewport:open()
     -- Updates the Viewport canvas if necessary.
-    self:updateCanvas()
+    self:_updateCanvas()
 
     -- Sets the Viewport canvas as the current canvas.
     self._previous_canvas = love.graphics.getCanvas()
     love.graphics.setCanvas(self._canvas)
     love.graphics.clear(self.clear_color)
 end
-
 
 --- Closes the Viewport drawing operations and renders it.
 function Viewport:close()
@@ -131,7 +132,6 @@ function Viewport:close()
     love.graphics.draw(self._canvas, canvasX, canvasY, self.rotation, scaleX, scaleY, canvasW/2, canvasH/2)
     love.graphics.setBlendMode(blendmode, alphamode)
 end
-
 
 --- Converts a screen position to a point in the Viewport.
 --- @param x number
@@ -161,7 +161,6 @@ function Viewport:toViewport(x, y)
     return px, py
 end
 
-
 --- Converts a Viewport position to a point on the screen.
 --- @param x number
 --- @param y number
@@ -189,18 +188,24 @@ function Viewport:toScreen(x, y)
     return px, py
 end
 
----| Private Functions
+--#endregion
+
+
+--#region Private Methods
 
 --- Updates the viewport canvas.
 --- @private
-function Viewport:updateCanvas()
+function Viewport:_updateCanvas()
     if self._need_canvas_update then
         self._canvas = createCanvas(self)
         self._need_canvas_update = false
     end
 end
 
----| Setters
+--#endregion
+
+
+--#region Setters
 
 --- Sets the Viewport width.
 --- @param width number
@@ -209,7 +214,6 @@ function Viewport:setWidth(width)
     self._need_canvas_update = true
 end
 
-
 --- Sets the Viewport height.
 --- @param height number
 function Viewport:setHeight(height)
@@ -217,14 +221,12 @@ function Viewport:setHeight(height)
     self._need_canvas_update = true
 end
 
-
 --- Sets the Viewport scale mode.
 --- @param scale_mode Viewport.ScaleMode
 function Viewport:setScaleMode(scale_mode)
     self._scale_mode = scale_mode
     self._need_canvas_update = true
 end
-
 
 --- Sets the Viewport settings.
 --- @param settings table
@@ -235,33 +237,39 @@ function Viewport:setSettings(settings)
     self._need_canvas_update = true
 end
 
----| Getters
+--#endregion
+
+
+--#region Getters
 
 --- Returns the Viewport width.
+--- @nodiscard
 --- @return number
 function Viewport:getWidth()
     return self._width
 end
 
-
 --- Returns the Viewport height.
+--- @nodiscard
 --- @return number
 function Viewport:getHeight()
     return self._height
 end
 
-
 --- Returns the Viewport scale mode.
+--- @nodiscard
 --- @return Viewport.ScaleMode
 function Viewport:getScaleMode()
     return self._scale_mode
 end
 
-
 --- Returns the Viewport settings. These values should not be modified directly.
+--- @nodiscard
 --- @return table
 function Viewport:getSettings()
     return self._settings
 end
+
+--#endregion
 
 return Viewport
