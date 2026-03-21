@@ -35,21 +35,23 @@ end
 --- @nodiscard
 --- @param viewport Viewport
 --- @param canvas love.Canvas
+--- @param base_canvas? love.Canvas
 --- @return integer, integer
-local function getCanvasScale(viewport, canvas)
-    local windowW, windowH = love.graphics.getDimensions()
+local function getCanvasScale(viewport, canvas, base_canvas)
+    local baseW = base_canvas and base_canvas:getWidth() or love.graphics.getWidth()
+    local baseH = base_canvas and base_canvas:getHeight() or love.graphics.getHeight()
     local canvasW, canvasH = canvas:getDimensions()
     local scaleX, scaleY
 
     if viewport:getScaleMode() == "keep_size" then
-        scaleX = math.min(windowW / canvasW, windowH / canvasH)
+        scaleX = math.min(baseW / canvasW, baseH / canvasH)
         scaleY = scaleX
     elseif viewport:getScaleMode() == "pixel_perfect" then
-        scaleX = math.floor(math.min(windowW / canvasW, windowH / canvasH))
+        scaleX = math.floor(math.min(baseW / canvasW, baseH / canvasH))
         scaleY = scaleX
     elseif viewport:getScaleMode() == "stretch" then
-        scaleX = windowW / canvasW
-        scaleY = windowH / canvasH
+        scaleX = baseW / canvasW
+        scaleY = baseH / canvasH
     elseif viewport:getScaleMode() == "none" then
         scaleX = viewport:getWidth() / canvasW
         scaleY = viewport:getHeight() / canvasH
@@ -61,16 +63,18 @@ end
 --- Returns the position of the viewport canvas.
 --- @nodiscard
 --- @param viewport Viewport
+--- @param base_canvas love.Canvas
 --- @return number, number
-local function getCanvasPosition(viewport)
-    local windowW, windowH = love.graphics.getDimensions()
+local function getCanvasPosition(viewport, base_canvas)
+    local baseW = base_canvas and base_canvas:getWidth() or love.graphics.getWidth()
+    local baseH = base_canvas and base_canvas:getHeight() or love.graphics.getHeight()
     local canvasX, canvasY
 
     if viewport:getScaleMode() == "none" then
         canvasX, canvasY = viewport.x, viewport.y
     else
-        canvasX = windowW / 2
-        canvasY = windowH / 2
+        canvasX = baseW / 2
+        canvasY = baseH / 2
     end
 
     return canvasX, canvasY
@@ -122,10 +126,9 @@ end
 function Viewport:close()
     love.graphics.setCanvas(self._previous_canvas)
 
-    local windowW, windowH = love.graphics.getDimensions()
     local canvasW, canvasH = self._canvas:getDimensions()
-    local scaleX, scaleY = getCanvasScale(self, self._canvas)
-    local canvasX, canvasY = getCanvasPosition(self)
+    local scaleX, scaleY = getCanvasScale(self, self._canvas, self._previous_canvas)
+    local canvasX, canvasY = getCanvasPosition(self, self._previous_canvas)
 
     local blendmode, alphamode = love.graphics.getBlendMode()
     love.graphics.setBlendMode("alpha", "premultiplied")
@@ -139,7 +142,7 @@ end
 --- @return number, number
 function Viewport:toViewport(x, y)
     local scaleX, scaleY = getCanvasScale(self, self._canvas)
-    local canvasX, canvasY = getCanvasPosition(self)
+    local canvasX, canvasY = getCanvasPosition(self, self._previous_canvas)
     local canvasW, canvasH = self._canvas:getDimensions()
 
     local px = x - canvasX
@@ -167,7 +170,7 @@ end
 --- @return number, number
 function Viewport:toScreen(x, y)
     local scaleX, scaleY = getCanvasScale(self, self._canvas)
-    local canvasX, canvasY = getCanvasPosition(self)
+    local canvasX, canvasY = getCanvasPosition(self, self._previous_canvas)
     local canvasW, canvasH = self._canvas:getDimensions()
 
     local px = (x - canvasW/2) * scaleX
@@ -207,6 +210,13 @@ end
 
 --#region Setters
 
+--- Sets the Viewport position.
+--- @param x number
+--- @param y number
+function Viewport:setPosition(x, y)
+    self.x, self.y = x, y
+end
+
 --- Sets the Viewport width.
 --- @param width number
 function Viewport:setWidth(width)
@@ -219,6 +229,14 @@ end
 function Viewport:setHeight(height)
     self._height = height
     self._need_canvas_update = true
+end
+
+--- Sets the Viewport dimensions.
+--- @param widht number
+--- @param height number
+function Viewport:setDimensions(widht, height)
+    self:setWidth(widht)
+    self:setHeight(height)
 end
 
 --- Sets the Viewport scale mode.
@@ -242,6 +260,13 @@ end
 
 --#region Getters
 
+--- Returns the Viewport position.
+--- @nodiscard
+--- @return number, number
+function Viewport:getPosition()
+    return self.x, self.y
+end
+
 --- Returns the Viewport width.
 --- @nodiscard
 --- @return number
@@ -254,6 +279,13 @@ end
 --- @return number
 function Viewport:getHeight()
     return self._height
+end
+
+--- Returns the Viewport dimensions.
+--- @nodiscard
+--- @return number, number
+function Viewport:getDimensions()
+    return self:getWidth(), self:getHeight()
 end
 
 --- Returns the Viewport scale mode.
