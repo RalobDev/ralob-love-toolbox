@@ -35,7 +35,7 @@ end
 --- @nodiscard
 --- @param viewport Viewport
 --- @param canvas love.Canvas
---- @param base_canvas? love.Canvas
+--- @param base_canvas love.Canvas
 --- @return integer, integer
 local function getCanvasScale(viewport, canvas, base_canvas)
     local baseW = base_canvas and base_canvas:getWidth() or love.graphics.getWidth()
@@ -141,7 +141,7 @@ end
 --- @param y number
 --- @return number, number
 function Viewport:toViewport(x, y)
-    local scaleX, scaleY = getCanvasScale(self, self._canvas)
+    local scaleX, scaleY = getCanvasScale(self, self._canvas, self._previous_canvas)
     local canvasX, canvasY = getCanvasPosition(self, self._previous_canvas)
     local canvasW, canvasH = self._canvas:getDimensions()
 
@@ -169,7 +169,7 @@ end
 --- @param y number
 --- @return number, number
 function Viewport:toScreen(x, y)
-    local scaleX, scaleY = getCanvasScale(self, self._canvas)
+    local scaleX, scaleY = getCanvasScale(self, self._canvas, self._previous_canvas)
     local canvasX, canvasY = getCanvasPosition(self, self._previous_canvas)
     local canvasW, canvasH = self._canvas:getDimensions()
 
