@@ -1,3 +1,5 @@
+--- @diagnostic disable
+
 --
 -- Class (based on classic)
 --
@@ -44,7 +46,7 @@ end
 --- Implements the methods of a mixin.
 --- @param ... table
 function Class:implement(...)
-    for _, cls in pairs({...}) do
+    for _, cls in pairs({ ... }) do
         for k, v in pairs(cls) do
             if self[k] == nil and type(v) == "function" then
                 self[k] = v

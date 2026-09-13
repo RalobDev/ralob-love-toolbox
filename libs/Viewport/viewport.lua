@@ -1,3 +1,5 @@
+--- @diagnostic disable
+
 --- @class Viewport
 --- @field x number
 --- @field y number
@@ -98,7 +100,7 @@ function Viewport:new(width, height, scale_mode, settings)
     obj.x = 0
     obj.y = 0
     obj.rotation = 0
-    obj.clear_color = { 0.1, 0.1 , 0.1, 1.0 }
+    obj.clear_color = { 0.1, 0.1, 0.1, 1.0 }
     obj._width = width
     obj._height = height
     obj._scale_mode = scale_mode or "keep_size"
@@ -132,7 +134,7 @@ function Viewport:close()
 
     local blendmode, alphamode = love.graphics.getBlendMode()
     love.graphics.setBlendMode("alpha", "premultiplied")
-    love.graphics.draw(self._canvas, canvasX, canvasY, self.rotation, scaleX, scaleY, canvasW/2, canvasH/2)
+    love.graphics.draw(self._canvas, canvasX, canvasY, self.rotation, scaleX, scaleY, canvasW / 2, canvasH / 2)
     love.graphics.setBlendMode(blendmode, alphamode)
 end
 
@@ -158,8 +160,8 @@ function Viewport:toViewport(x, y)
         px, py = rx, ry
     end
 
-    px = px/scaleX + canvasW/2
-    py = py/scaleY + canvasH/2
+    px = px / scaleX + canvasW / 2
+    py = py / scaleY + canvasH / 2
 
     return px, py
 end
@@ -173,8 +175,8 @@ function Viewport:toScreen(x, y)
     local canvasX, canvasY = getCanvasPosition(self, self._previous_canvas)
     local canvasW, canvasH = self._canvas:getDimensions()
 
-    local px = (x - canvasW/2) * scaleX
-    local py = (y - canvasH/2) * scaleY
+    local px = (x - canvasW / 2) * scaleX
+    local py = (y - canvasH / 2) * scaleY
 
     if self.rotation ~= 0 then
         local cosr = math.cos(self.rotation)
