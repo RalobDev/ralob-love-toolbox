@@ -91,6 +91,14 @@ Rotation affects:
 
 Everything remains mathematically consistent.
 
+## 🖱️ Mouse Position
+
+It is possible to directly obtain the mouse position within the viewport.
+
+```lua
+local mouseX, mouseY = viewport:getMousePosition()
+```
+
 ## 🎨 Clear Color
 
 The `clear_color` defines the color used to clear the viewport canvas whenever it is opened.

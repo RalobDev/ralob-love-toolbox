@@ -304,6 +304,14 @@ function Viewport:getSettings()
     return self._settings
 end
 
+--- Returns the mouse position within the viewport.
+---@nodiscard
+---@return number x
+---@return number y
+function Viewport:getMousePosition()
+    return self:toViewport(love.mouse.getPosition())
+end
+
 --#endregion
 
 return Viewport
